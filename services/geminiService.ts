@@ -23,6 +23,14 @@ const OUTROS = [
   "Protecting our established neighborhoods should be the council's top priority. Please deny the permits for this facility."
 ];
 
+const SIGN_OFFS = [
+  "Sincerely,",
+  "Respectfully,",
+  "Thank you,",
+  "Best regards,",
+  "With concern,"
+];
+
 const CONCERN_VARIANTS: Record<ConcernType, string[]> = {
   [ConcernType.NOISE]: [
     "The constant hum of cooling fans and HVAC systems associated with datacenters is known to travel for miles. This 24/7 industrial noise will destroy the peace and quiet of our residential neighborhood.",
@@ -74,7 +82,7 @@ export const generateProtestEmail = async (data: ProtestData): Promise<Generated
       .replace("[Name]", data.name)
       .replace("[Neighborhood]", data.neighborhood);
 
-  let bodyParts = [intro];
+  let bodyParts = ["Dear Mayor and City Council Members,", intro];
 
   data.concerns.forEach(concern => {
       const variants = CONCERN_VARIANTS[concern as ConcernType];
@@ -85,6 +93,11 @@ export const generateProtestEmail = async (data: ProtestData): Promise<Generated
 
   let outro = getRandom(OUTROS);
   bodyParts.push(outro);
+
+  // Add signature block
+  const signOff = getRandom(SIGN_OFFS);
+  const signature = `${signOff}\n${data.name}\n${data.neighborhood}`;
+  bodyParts.push(signature);
 
   const body = bodyParts.join("\n\n");
 
